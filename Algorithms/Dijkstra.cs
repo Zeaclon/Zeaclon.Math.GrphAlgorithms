@@ -1,4 +1,4 @@
-﻿namespace Zeaclon.Math.GraphAlgorithms
+﻿namespace Zeaclon.Math.GraphAlgorithms.Algorithms
 {
     public static class Dijkstra
     {
