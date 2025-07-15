@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Zeaclon.Math.GraphAlgorithms
+﻿namespace Zeaclon.Math.GraphAlgorithms
 {
     public static class Dijkstra
     {
@@ -13,22 +10,22 @@ namespace Zeaclon.Math.GraphAlgorithms
         /// <returns>Array of shortest distances from source to each node.</returns>
         public static int[] ShortestPaths(int[,] graph, int source)
         {
-            int n = graph.GetLength(0);
-            int[] dist = new int[n];
-            bool[] visited = new bool[n];
+            var n = graph.GetLength(0);
+            var dist = new int[n];
+            var visited = new bool[n];
             
-            for (int i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
                 dist[i] = int.MaxValue;
             
             dist[source] = 0;
 
-            for (int count = 0; count < n - 1; count++)
+            for (var count = 0; count < n - 1; count++)
             {
-                int u = MinDistance(dist, visited);
+                var u = MinDistance(dist, visited);
                 if (u == -1) break;
                 visited[u] = true;
 
-                for (int v = 0; v < n; v++)
+                for (var v = 0; v < n; v++)
                 {
                     if (!visited[v] && graph[u, v] != int.MaxValue && dist[u] != int.MaxValue &&
                         dist[u] + graph[u, v] < dist[v])
@@ -45,16 +42,17 @@ namespace Zeaclon.Math.GraphAlgorithms
         {
             int min = int.MaxValue, minIndex = -1;
 
-            for (int v = 0; v < dist.Length; v++)
+            for (var v = 0; v < dist.Length; v++)
             {
-                if (!visited[v] && dist[v] != min)
+                if (!visited[v] && dist[v] <= min)
                 {
                     min = dist[v];
                     minIndex = v;
                 }
             }
-            
+
             return minIndex;
         }
+
     }
 }
