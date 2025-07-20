@@ -1,4 +1,7 @@
-﻿namespace Zeaclon.Math.GraphAlgorithms.Algorithms
+﻿using Zeaclon.Math.GraphAlgorithms.Core;
+using Zeaclon.Math.GraphAlgorithms.Utils;
+
+namespace Zeaclon.Math.GraphAlgorithms.Algorithms
 {
     public static class Dijkstra
     {
@@ -8,51 +11,43 @@
         /// <param name="graph">Adjacency Matrix representing the graph (weights). Use int.MaxValue for no edge.</param>
         /// <param name="source">Index of the source node.</param>
         /// <returns>Array of shortest distances from source to each node.</returns>
-        public static int[] ShortestPaths(int[,] graph, int source)
+        public static Dictionary<Node, double> ShortestPaths(Graph graph, Node source)
         {
-            var n = graph.GetLength(0);
-            var dist = new int[n];
-            var visited = new bool[n];
-            
-            for (var i = 0; i < n; i++)
-                dist[i] = int.MaxValue;
-            
-            dist[source] = 0;
+            var distances = graph.Nodes.ToDictionary(node => node, _ => double.PositiveInfinity);
+            var visited = new HashSet<Node>();
+            var priorityQueue = new SortedSet<Node>(
+                new NodeFScoreComparer(distances)
+            );
 
-            for (var count = 0; count < n - 1; count++)
+            distances[source] = 0;
+            priorityQueue.Add(source);
+
+            while (priorityQueue.Count > 0)
             {
-                var u = MinDistance(dist, visited);
-                if (u == -1) break;
-                visited[u] = true;
+                var current = priorityQueue.Min!;
+                priorityQueue.Remove(current);
 
-                for (var v = 0; v < n; v++)
+                if (visited.Contains(current))
+                    continue;
+
+                visited.Add(current);
+
+                foreach (var edge in graph.GetEdgesFrom(current))
                 {
-                    if (!visited[v] && graph[u, v] != int.MaxValue && dist[u] != int.MaxValue &&
-                        dist[u] + graph[u, v] < dist[v])
+                    var neighbor = edge.To;
+                    var alt = distances[current] + edge.Weight;
+
+                    if (alt < distances[neighbor])
                     {
-                        dist[v] = dist[u] + graph[u, v];
+                        // SortedSet requires re-adding to update order
+                        priorityQueue.Remove(neighbor);
+                        distances[neighbor] = alt;
+                        priorityQueue.Add(neighbor);
                     }
                 }
             }
 
-            return dist;
+            return distances;
         }
-
-        private static int MinDistance(int[] dist, bool[] visited)
-        {
-            int min = int.MaxValue, minIndex = -1;
-
-            for (var v = 0; v < dist.Length; v++)
-            {
-                if (!visited[v] && dist[v] <= min)
-                {
-                    min = dist[v];
-                    minIndex = v;
-                }
-            }
-
-            return minIndex;
-        }
-
     }
 }
