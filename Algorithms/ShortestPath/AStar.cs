@@ -41,6 +41,122 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
             return null;
         }
 
+        public static List<Node>? FindBidirectionalPath(Graph graph, Node start, Node goal,
+            Func<Node, double> heuristic)
+        {
+            var forwardG = graph.Nodes.ToDictionary(n => n, _ => double.PositiveInfinity);
+            var backwardG = graph.Nodes.ToDictionary(n => n, _ => double.PositiveInfinity);
+            
+            var forwardF = graph.Nodes.ToDictionary(n => n, _ => double.PositiveInfinity);
+            var backwardF = graph.Nodes.ToDictionary(n => n, _ => double.PositiveInfinity);
+            
+            var forwardCameFrom = new Dictionary<Node, Node?>();
+            var backwardCameFrom = new Dictionary<Node, Node?>();
+            
+            var forwardOpenSet = new SortedSet<Node>(new NodeFScoreComparer(forwardF));
+            var backwardOpenSet = new SortedSet<Node>(new NodeFScoreComparer(backwardF));
+            
+            forwardG[start] = 0;
+            forwardF[start] = heuristic(start);
+            forwardOpenSet.Add(start);
+            
+            backwardG[goal] = 0;
+            backwardF[goal] = heuristic(goal);
+            backwardOpenSet.Add(goal);
+            
+            var visitedFromBoth = new HashSet<Node>();
+            Node? meetingPoint = null;
+            double bestPathLength = double.PositiveInfinity;
+            var reverseGraph = graph.Reverse();
+
+            while (forwardOpenSet.Count > 0 && backwardOpenSet.Count > 0)
+            {
+                Node current = forwardOpenSet.Min!;
+                forwardOpenSet.Remove(current);
+
+                foreach (var edge in graph.GetEdgesFrom(current))
+                {
+                    Node neighbor = edge.To;
+                    double tentativeG = forwardG[current] + edge.Weight;
+
+                    if (tentativeG < forwardG[neighbor])
+                    {
+                        forwardCameFrom[neighbor] = current;
+                        forwardG[neighbor] = tentativeG;
+                        forwardF[neighbor] = tentativeG + heuristic(neighbor);
+                        forwardOpenSet.Remove(neighbor);
+                        forwardOpenSet.Add(neighbor);
+                    }
+
+                    if (backwardG[neighbor] < double.PositiveInfinity)
+                    {
+                        double pathLength = forwardG[neighbor] + backwardG[neighbor];
+                        if (pathLength < bestPathLength)
+                        {
+                            bestPathLength = pathLength;
+                            meetingPoint = neighbor;
+                        }
+                    }
+                }
+                
+                current = backwardOpenSet.Min!;
+                backwardOpenSet.Remove(current);
+                
+                foreach (var edge in reverseGraph.GetEdgesFrom(current))
+                {
+                    Node neighbor = edge.To;
+                    double tentativeG = backwardG[current] + edge.Weight;
+
+                    if (tentativeG < backwardG[neighbor])
+                    {
+                        backwardCameFrom[neighbor] = current;
+                        backwardG[neighbor] = tentativeG;
+                        backwardF[neighbor] = tentativeG + heuristic(neighbor);
+                        backwardOpenSet.Remove(neighbor);
+                        backwardOpenSet.Add(neighbor);
+                    }
+
+                    if (forwardG[neighbor] < double.PositiveInfinity)
+                    {
+                        double pathLength = forwardG[neighbor] + backwardG[neighbor];
+                        if (pathLength < bestPathLength)
+                        {
+                            bestPathLength = pathLength;
+                            meetingPoint = neighbor;
+                        }
+                    }
+                }
+            }
+            
+            return meetingPoint is null ? null : ReconstructBidirectionalPath(forwardCameFrom, backwardCameFrom, meetingPoint);
+        }
+
+        private static List<Node> ReconstructBidirectionalPath(Dictionary<Node, Node?> forward,
+            Dictionary<Node, Node?> backward, Node? meet)
+        {
+            var path = new List<Node>();
+            var curr = meet;
+            
+            // reconstruct forward path
+            while (forward.TryGetValue(curr, out var prev) && prev is not null)
+            {
+                path.Insert(0, prev);
+                curr = prev;
+            }
+
+            path.Add(meet);
+            curr = meet;
+            
+            // reconstruct backward path
+            while (backward.TryGetValue(curr, out var next) && next is not null)
+            {
+                path.Add(next);
+                curr = next;
+            }
+
+            return path;
+        }
+
         private static List<Node> ReconstructPath(Dictionary<Node, Node?> cameFrom, Node current)
         {
             var path = new List<Node> { current };
