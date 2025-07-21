@@ -1,6 +1,7 @@
-﻿using Zeaclon.Math.GraphAlgorithms.Core;
+﻿using Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath;
+using Zeaclon.Math.GraphAlgorithms.Core;
 
-namespace Zeaclon.Math.GraphAlgorithms.Algorithms
+namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
 {
     
     public static class Johnson

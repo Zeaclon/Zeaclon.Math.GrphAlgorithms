@@ -1,7 +1,6 @@
 ﻿using Zeaclon.Math.GraphAlgorithms.Core;
-using System.Collections.Generic;
 
-namespace Zeaclon.Math.GraphAlgorithms.Algorithms
+namespace Zeaclon.Math.GraphAlgorithms.Algorithms.MinimumSpanningTree
 {
     public static class Prim
     {

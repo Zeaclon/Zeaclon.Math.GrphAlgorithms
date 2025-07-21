@@ -1,7 +1,7 @@
 ﻿using Zeaclon.Math.GraphAlgorithms.Core;
 using Zeaclon.Math.GraphAlgorithms.Utils;
 
-namespace Zeaclon.Math.GraphAlgorithms.Algorithms
+namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
 {
     public static class AStar
     {

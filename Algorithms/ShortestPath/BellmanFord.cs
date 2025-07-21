@@ -1,6 +1,6 @@
 ﻿using Zeaclon.Math.GraphAlgorithms.Core;
 
-namespace Zeaclon.Math.GraphAlgorithms.Algorithms
+namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
 {
     public static class BellmanFord
     {
