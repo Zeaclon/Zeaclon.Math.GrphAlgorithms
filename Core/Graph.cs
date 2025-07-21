@@ -14,5 +14,8 @@
         
         public IEnumerable<Edge> GetEdgesFrom(Node node) =>
             Edges.Where(e => e.From == node);
+        
+        public IEnumerable<Node> GetNeighbors(Node node) =>
+            GetEdgesFrom(node).Select(e => e.To);
     }
 }

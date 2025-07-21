@@ -22,13 +22,12 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.GraphTraversal
             {
                 var current = queue.Dequeue();
 
-                foreach (var edge in graph.GetEdgesFrom(current))
+                foreach (var neighbor in graph.GetNeighbors(current))
                 {
-                    var neighbor = edge.To;
                     if (!visited.Contains(neighbor))
                     {
                         visited.Add(neighbor);
-                        distance[neighbor] = distance[current]++;
+                        distance[neighbor] = distance[current] + 1;
                         queue.Enqueue(neighbor);
                     }
                 }
