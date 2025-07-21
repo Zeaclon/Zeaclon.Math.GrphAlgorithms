@@ -1,4 +1,5 @@
-﻿using Zeaclon.Math.GraphAlgorithms.Algorithms.GraphTraversal;
+﻿using Zeaclon.Math.GraphAlgorithms.Algorithms.CycleDetection;
+using Zeaclon.Math.GraphAlgorithms.Algorithms.GraphTraversal;
 using Zeaclon.Math.GraphAlgorithms.Core;
 
 namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Topological
@@ -7,27 +8,24 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Topological
     {
         public static List<Node>? TopoDFS(Graph graph)
         {
+            if (CycleDetector.HasCycleDirected(graph))
+                return null; // cycle detected, no topo order possible
+            
+            // proceed with DFS-based topo sort (without cycle detection, since already checked)
             var visited = new HashSet<Node>();
-            var onStack = new HashSet<Node>();
             var result = new List<Node>();
-            bool cycleDetected = false;
 
-            void OnCycle(Node _) => cycleDetected = true;
+            void DFSVisit(Node node)
+            {
+                if (visited.Contains(node)) return;
+                visited.Add(node);
+                foreach (var edge in graph.GetEdgesFrom(node))
+                    DFSVisit(edge.To);
+                result.Add(node);
+            }
 
             foreach (var node in graph.Nodes)
-            {
-                if (!visited.Contains(node))
-                {
-                    DFS.DFSVisit(node, visited, onStack, 
-                        onPreVisit: null, 
-                        onPostVisit: n => result.Add(n),
-                        onCycleDetected: OnCycle,
-                        graph: graph);
-
-                    if (cycleDetected)
-                        return null; // Cycle detected, no valid topo sort
-                }
-            }
+                DFSVisit(node);
 
             result.Reverse();
             return result;
@@ -35,15 +33,16 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Topological
 
         public static List<Node>? TopoKahn(Graph graph)
         {
+            if (CycleDetector.HasCycleDirected(graph))
+                return null; // Early cycle detection
+
             var inDegree = new Dictionary<Node, int>();
             var result = new List<Node>();
             var queue = new Queue<Node>();
-            
-            // Initialize in-degree of all nodes to 0
+
             foreach (var node in graph.Nodes)
                 inDegree[node] = 0;
-            
-            // Count actual in-degrees from edge
+
             foreach (var node in graph.Nodes)
             {
                 foreach (var neighbor in graph.GetNeighbors(node))
@@ -53,14 +52,12 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Topological
                 }
             }
 
-            // Enqueue all nodes with in-degree 0
             foreach (var (node, degree) in inDegree)
             {
                 if (degree == 0)
                     queue.Enqueue(node);
             }
-            
-            // Process the queue
+
             while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
@@ -73,9 +70,8 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Topological
                         queue.Enqueue(neighbor);
                 }
             }
-            
-            // check if all nodes were processed
-            return result.Count == graph.Nodes.Count ? result : null; // null = cycle detected
+
+            return result.Count == graph.Nodes.Count ? result : null;
         }
     }       
 }
