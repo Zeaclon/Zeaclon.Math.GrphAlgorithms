@@ -17,5 +17,20 @@
         
         public IEnumerable<Node> GetNeighbors(Node node) =>
             GetEdgesFrom(node).Select(e => e.To);
+
+        public Graph Reverse()
+        {
+            var reversed = new Graph();
+            
+            // add all nodes first
+            foreach (var node in Nodes)
+                reversed.AddNode(node);
+            
+            // reverse the edges
+            foreach (var edge in Edges)
+                reversed.AddEdge(edge.To, edge.From, edge.Weight);
+            
+            return reversed;
+        }
     }
 }
