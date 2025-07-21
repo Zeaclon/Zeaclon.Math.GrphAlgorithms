@@ -34,5 +34,26 @@ namespace Zeaclon.Math.GraphAlgorithms.Extensions
             // Remove the node itself
             graph.Nodes.Remove(node);
         }
+        
+        public static double GetEdgeCapacity(this Graph graph, Node from, Node to)
+        {
+            var edge = graph.Edges.FirstOrDefault(e => e.From == from && e.To == to);
+            return edge?.Weight ?? 0;
+        }
+
+        public static void UpdateEdgeCapacity(this Graph graph, Node from, Node to, double newCapacity)
+        {
+            var edge = graph.Edges.FirstOrDefault(e => e.From == from && e.To == to);
+            if (edge != null)
+            {
+                graph.Edges.Remove(edge);
+                if (newCapacity > 0)
+                    graph.AddEdge(from, to, newCapacity);
+            }
+            else if (newCapacity > 0)
+            {
+                graph.AddEdge(from, to, newCapacity);
+            }
+        }
     }
 }
