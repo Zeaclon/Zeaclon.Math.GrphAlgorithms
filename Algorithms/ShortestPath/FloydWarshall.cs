@@ -6,7 +6,7 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
     {
         /// <summary>
         /// Computes shortest path distances between all pairs of nodes.
-        /// returns null if a negatic cycle is detected.
+        /// Returns null if a negative cycle is detected.
         /// </summary>
         public static Dictionary<Node, Dictionary<Node, double>>? AllPairsShortestPaths(Graph graph)
         {
@@ -20,7 +20,6 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
             
             // Initialize distance matrix
             var dist = new double[n, n];
-            
             const double INF = double.PositiveInfinity;
             
             for (var i = 0; i < n; i++)
@@ -34,23 +33,11 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
                 var to = nodeIndex[edge.To];
                 dist[from, to] = edge.Weight;
             }
+
+            // Perform Floyd-Warshall Core calculation
+            dist = PerformFloydWarshallCore(dist, n);
             
-            // Floyd-Warshall Core
-            for (var k = 0; k < n; k++)
-            {
-                for (var i = 0; i < n; i++)
-                {
-                    for (var j = 0; j < n; j++)
-                    {
-                        if (dist[i, k] + dist[k, j] < dist[i, j])
-                        {
-                            dist[i, j] = dist[i, k] + dist[k, j];
-                        }
-                    }
-                }
-            }
-            
-            // Detect negative cycles (distance from i to i < 0
+            // Detect negative cycles (distance from i to i < 0)
             for (var i = 0; i < n; i++)
             {
                 if (dist[i, i] < 0)
@@ -70,6 +57,28 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
             }
             
             return result;
+        }
+
+        /// <summary>
+        /// Core Floyd-Warshall computation to update the distance matrix.
+        /// </summary>
+        private static double[,] PerformFloydWarshallCore(double[,] dist, int n)
+        {
+            for (var k = 0; k < n; k++)
+            {
+                for (var i = 0; i < n; i++)
+                {
+                    for (var j = 0; j < n; j++)
+                    {
+                        if (dist[i, k] + dist[k, j] < dist[i, j])
+                        {
+                            dist[i, j] = dist[i, k] + dist[k, j];
+                        }
+                    }
+                }
+            }
+
+            return dist;
         }
     }
 }

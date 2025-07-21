@@ -27,7 +27,7 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.GraphTraversal
         {
             var visited = new HashSet<Node>();
             var result = new List<Node>();
-            DFS.DFSVisit(start, visited, new HashSet<Node>(), 
+            DFSVisit(start, visited, new HashSet<Node>(), 
                 onPreVisit: n => result.Add(n), 
                 onPostVisit: null,
                 onCycleDetected: null,
