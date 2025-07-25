@@ -66,7 +66,7 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Flow
             }
 
             path = new List<Node>();
-            for (var node = sink; node != null; node = parents[node]!)
+            for (var node = sink; node is not null; node = parents[node]!)
                 path.Insert(0, node);
 
             pathFlow = double.PositiveInfinity;
