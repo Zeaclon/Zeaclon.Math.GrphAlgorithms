@@ -2,9 +2,9 @@
 
 namespace Zeaclon.Math.GraphAlgorithms.Core
 {
-    public class Path
+    public record Path
     {
-        public List<Node> Nodes { get; }
+        public IReadOnlyList<Node> Nodes { get; }
         public double Cost { get; }
 
         public Path(IEnumerable<Node> nodes, double cost)
@@ -13,10 +13,11 @@ namespace Zeaclon.Math.GraphAlgorithms.Core
             Cost = cost;
         }
 
-        public Path(List<Node> nodes, Graph graph)
+        public Path(IEnumerable<Node> nodes, Graph graph)
         {
-            Nodes = nodes;
-            Cost = PathUtils.CalculatePathCost(graph, nodes);
+            var nodeList = nodes.ToList();
+            Nodes = nodeList.AsReadOnly();
+            Cost = PathUtils.CalculatePathCost(graph, nodeList);
         }
 
         public int Length => Nodes.Count;
@@ -24,21 +25,6 @@ namespace Zeaclon.Math.GraphAlgorithms.Core
         public override string ToString()
         {
             return $"Path (Cost: {Cost}, Length: {Length}): {string.Join(" -> ", Nodes.Select(n => n.Id))}";
-        }
-
-        public Path Clone()
-        {
-            return new Path(new List<Node>(Nodes), Cost);
-        }
-
-        public bool Equals(Path other)
-        {
-            if (other == null || Nodes.Count != other.Nodes.Count) return false;
-            for (int i = 0; i < Nodes.Count; i++)
-            {
-                if (!Nodes[i].Equals(other.Nodes[i])) return false;
-            }
-            return true;
         }
     }
 }
