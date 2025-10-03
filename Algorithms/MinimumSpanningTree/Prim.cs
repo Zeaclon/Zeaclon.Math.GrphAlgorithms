@@ -6,6 +6,9 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.MinimumSpanningTree
     {
         public static List<Edge> MinimumSpanningTree(Graph graph)
         {
+            if (graph.IsDirected)
+                throw new InvalidOperationException("Prim's algorithm requires an undirected graph.");
+            
             var mstEdges = new List<Edge>();
             var nodes = graph.Nodes;
             if (nodes.Count == 0)

@@ -10,6 +10,9 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
         /// </summary>
         public static Dictionary<Node, double>? ShortestPaths(Graph graph, Node source)
         {
+            if (!graph.Nodes.Contains(source))
+                return new Dictionary<Node, double>();
+            
             var distances = graph.Nodes.ToDictionary(n => n, n => double.PositiveInfinity);
             distances[source] = 0;
 

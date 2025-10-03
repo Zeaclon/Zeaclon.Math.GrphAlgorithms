@@ -14,9 +14,15 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
 
         public static List<Node>? FindPath(Graph graph, Node start, Node goal)
         {
-            if (_instance == null)
+            if (_instance is null)
                 throw new InvalidOperationException("Alt not initialized. Call Initialize() first.");
             return _instance.FindPathAlt(start, goal);
+        }
+        
+        // Reset static state (use in tests)
+        public static void Reset()
+        {
+            _instance = null;
         }
     }
 }

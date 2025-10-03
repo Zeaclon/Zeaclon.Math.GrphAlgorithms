@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Zeaclon.Math.GraphAlgorithms.Algorithms.GraphTraversal;
+﻿using Zeaclon.Math.GraphAlgorithms.Algorithms.GraphTraversal;
 using Zeaclon.Math.GraphAlgorithms.Core;
 
 namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Connectivity
@@ -17,74 +16,21 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Connectivity
             var visited = new HashSet<Node>();
             var discoveryTime = new Dictionary<Node, int>();
             var lowTime = new Dictionary<Node, int>();
-            var parent = new Dictionary<Node, Node?>(); // Keep track of DFS tree structure
+            var parent = new Dictionary<Node, Node?>();
             var articulationPoints = new HashSet<Node>();
-            time = 0;
-            
-            // Apply DFS and find articulation points
+            int time = 0;
+
             foreach (var node in graph.Nodes)
             {
                 if (!visited.Contains(node))
                 {
-                    DFS.DFSVisit(
-                        node,
-                        visited,
-                        onStack: new HashSet<Node>(),
-                        onPreVisit: (n) =>
-                        {
-                            discoveryTime[n] = time;
-                            lowTime[n] = time;
-                            parent[n] = null; // Root node has no parent
-                            time++;
-                        },
-                        onPostVisit: (n) =>
-                        {
-                            int children = 0;
-                            bool isArticulation = false;
-
-                            foreach (var edge in graph.GetEdgesFrom(n))
-                            {
-                                var neighbor = edge.To;
-                                if (!visited.Contains(neighbor))
-                                {
-                                    children++;
-                                    parent[neighbor] = n;
-
-                                    // Perform DFS on the neighbor
-                                    DFS.DFSVisit(
-                                        neighbor,
-                                        visited,
-                                        onStack: new HashSet<Node>(),
-                                        onPreVisit: null,
-                                        onPostVisit: (v) =>
-                                        {
-                                            // After visiting, check for articulation point condition
-                                            lowTime[n] = System.Math.Min(lowTime[n], lowTime[neighbor]);
-                                            if (parent[n] == null && children > 1)
-                                                isArticulation = true; // Root condition
-                                            if (parent[n] != null && lowTime[neighbor] >= discoveryTime[n])
-                                                isArticulation = true;
-                                        },
-                                        onCycleDetected: null,
-                                        graph: graph);
-                                }
-                                else if (neighbor != parent[n])
-                                {
-                                    // Back edge found
-                                    lowTime[n] = System.Math.Min(lowTime[n], discoveryTime[neighbor]);
-                                }
-                            }
-
-                            if (isArticulation)
-                            {
-                                articulationPoints.Add(n);
-                            }
-                        },
-                        onCycleDetected: null,
-                        graph: graph);
+                    parent[node] = null;
+                    DFS.DFSArticulation(node, graph, visited, discoveryTime, lowTime, parent, articulationPoints, ref time);
                 }
             }
-            return new List<Node>(articulationPoints);
+
+            return articulationPoints.ToList();
         }
+
     }   
 }

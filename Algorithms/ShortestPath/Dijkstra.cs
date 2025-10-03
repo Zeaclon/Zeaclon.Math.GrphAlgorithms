@@ -3,7 +3,7 @@ using Zeaclon.Math.GraphAlgorithms.Utils;
 
 namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
 {
-    public static class Dijkstra
+    public class Dijkstra
     {
         /// <summary>
         /// Calculates the shortest path distances from the source node to all other nodes using Dijkstra’s algorithm.

@@ -1,5 +1,4 @@
 ﻿using Zeaclon.Math.GraphAlgorithms.Algorithms.CycleDetection;
-using Zeaclon.Math.GraphAlgorithms.Algorithms.GraphTraversal;
 using Zeaclon.Math.GraphAlgorithms.Core;
 
 namespace Zeaclon.Math.GraphAlgorithms.Algorithms.Topological
