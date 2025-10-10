@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Update="Math.Tests\UnitTest1.cs">
+        <Link>TestProject1\UnitTest1.cs</Link>
+      </Compile>
+    </ItemGroup>
+
 </Project>

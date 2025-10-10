@@ -67,5 +67,86 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.GraphTraversal
             onStack.Remove(node);
             onPostVisit?.Invoke(node);
         }
+        
+        public static void DFSArticulation(
+            Node node,
+            Graph graph,
+            HashSet<Node> visited,
+            Dictionary<Node, int> discoveryTime,
+            Dictionary<Node, int> lowTime,
+            Dictionary<Node, Node?> parent,
+            HashSet<Node> articulationPoints,
+            ref int time)
+        {
+            visited.Add(node);
+            discoveryTime[node] = lowTime[node] = time++;
+            int children = 0;
+
+            foreach (var edge in graph.GetEdgesFrom(node))
+            {
+                var neighbor = edge.To;
+
+                if (!visited.Contains(neighbor))
+                {
+                    children++;
+                    parent[neighbor] = node;
+                    DFSArticulation(neighbor, graph, visited, discoveryTime, lowTime, parent, articulationPoints, ref time);
+
+                    lowTime[node] = System.Math.Min(lowTime[node], lowTime[neighbor]);
+
+                    // Articulation conditions
+                    if (parent[node] is not null && lowTime[neighbor] >= discoveryTime[node])
+                        articulationPoints.Add(node);
+
+                    if (parent[node] is null && children > 1)
+                        articulationPoints.Add(node); // Root with multiple children
+                }
+                else if (neighbor != parent.GetValueOrDefault(node))
+                {
+                    // Back edge
+                    lowTime[node] = System.Math.Min(lowTime[node], discoveryTime[neighbor]);
+                }
+            }
+        }
+        
+        public static void DFSBridge(
+            Node node,
+            Graph graph,
+            HashSet<Node> visited,
+            Dictionary<Node, int> discoveryTime,
+            Dictionary<Node, int> lowTime,
+            Dictionary<Node, Node?> parent,
+            List<(Node, Node)> bridges,
+            ref int time)
+        {
+            visited.Add(node);
+            discoveryTime[node] = time;
+            lowTime[node] = time;
+            time++;
+
+            foreach (var edge in graph.GetEdgesFrom(node))
+            {
+                var neighbor = edge.To;
+
+                if (!visited.Contains(neighbor))
+                {
+                    parent[neighbor] = node;
+                    DFSBridge(neighbor, graph, visited, discoveryTime, lowTime, parent, bridges, ref time);
+
+                    // Update low time for the parent
+                    lowTime[node] = System.Math.Min(lowTime[node], lowTime[neighbor]);
+
+                    // Bridge condition
+                    if (lowTime[neighbor] > discoveryTime[node])
+                        bridges.Add((node, neighbor));
+                }
+                else if (neighbor != parent.GetValueOrDefault(node))
+                {
+                    // Back edge found
+                    lowTime[node] = System.Math.Min(lowTime[node], discoveryTime[neighbor]);
+                }
+            }
+        }
+
     }
 }

@@ -44,6 +44,9 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
         public static List<Node>? FindBidirectionalPath(Graph graph, Node start, Node goal,
             Func<Node, double> heuristic)
         {
+            if (start == goal)
+                return [start];
+            
             var forwardG = graph.Nodes.ToDictionary(n => n, _ => double.PositiveInfinity);
             var backwardG = graph.Nodes.ToDictionary(n => n, _ => double.PositiveInfinity);
             
@@ -160,7 +163,7 @@ namespace Zeaclon.Math.GraphAlgorithms.Algorithms.ShortestPath
         private static List<Node> ReconstructPath(Dictionary<Node, Node?> cameFrom, Node current)
         {
             var path = new List<Node> { current };
-            while (cameFrom.TryGetValue(current, out var prev) && prev != null)
+            while (cameFrom.TryGetValue(current, out var prev) && prev is not null)
             {
                 current = prev;
                 path.Insert(0, current);
