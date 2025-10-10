@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zeaclon.Math.GraphAlgorithms", "Zeaclon.Math.GraphAlgorithms\Zeaclon.Math.GraphAlgorithms.csproj", "{FBCB9459-1744-4947-AD60-19105B9A3906}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zeaclon.Math.GraphAlgorithms.Tests", "Zeaclon.Math.GraphAlgorithms.Tests\Zeaclon.Math.GraphAlgorithms.Tests.csproj", "{5678F4AF-9193-428A-8B3E-10510A6C808C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBCB9459-1744-4947-AD60-19105B9A3906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBCB9459-1744-4947-AD60-19105B9A3906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBCB9459-1744-4947-AD60-19105B9A3906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBCB9459-1744-4947-AD60-19105B9A3906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5678F4AF-9193-428A-8B3E-10510A6C808C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5678F4AF-9193-428A-8B3E-10510A6C808C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5678F4AF-9193-428A-8B3E-10510A6C808C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5678F4AF-9193-428A-8B3E-10510A6C808C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
