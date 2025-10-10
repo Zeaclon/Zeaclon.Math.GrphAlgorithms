@@ -2,6 +2,7 @@
 
 namespace Zeaclon.Math.GraphAlgorithms.Core
 {
+    // todo struct
     public record Path
     {
         public IReadOnlyList<Node> Nodes { get; }
